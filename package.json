@@ -67,6 +67,7 @@
         "react-native-zip-archive": "^5.0.0",
         "reflect-metadata": "^0.1.13",
         "rn-secure-storage": "^2.0.6",
+        "rn-sliding-up-panel": "^2.4.5",
         "sha.js": "^2.4.11",
         "sqlite3": "^5.0.0",
         "ts-money": "^0.4.6",

@@ -32,6 +32,7 @@ import KeepAwake from '@sayem314/react-native-keep-awake';
 import DataWedgeIntents from 'react-native-datawedge-intents';
 import { deviceId } from '../utils/helpers';
 import { Button, Icon } from 'react-native-elements';
+import SlidingUpPanel from 'rn-sliding-up-panel';
 
 // const flashModeOrder: { [key: string]: keyof FlashMode } = {
 //     off: RNCamera.Constants.FlashMode.on,
@@ -201,6 +202,7 @@ const styles = StyleSheet.create({
 export default class Scanner2 extends React.Component<Scanner2Props, Scanner2State> {
     private camera: RNCamera | null = null;
     private beepSound: Sound;
+    private panel: SlidingUpPanel | null = null;
     private scannerMode: 'legacyCamera' | 'dataWedge';
     /* DataWedge */
     private sendCommandResult: 'true' | 'false' = 'false';
@@ -779,6 +781,7 @@ export default class Scanner2 extends React.Component<Scanner2Props, Scanner2Sta
                 });
             }
             if (this.props.onBarcodeRead !== undefined) {
+                this.panel?.show(200);
                 this.props.onBarcodeRead(barcode);
                 return;
             }
@@ -931,6 +934,17 @@ export default class Scanner2 extends React.Component<Scanner2Props, Scanner2Sta
                             title=" Clavier"
                         />
                     </View>
+                    <Button title="test" onPress={() => {
+                        const barcodeEvent: BarcodeReadEvent = {
+                            data: '3483981002176',
+                            type: 'ean13',
+                            bounds: {
+                                origin: { x: '0', y: '0' },
+                                size: { width: '640', height: '480' },
+                            }
+                        };
+                        this.barcodeRecognized(barcodeEvent);
+                    }} />
                 </View>
                 {!!canDetectFaces && this.renderFaces()}
                 {!!canDetectFaces && this.renderLandmarks()}
@@ -1024,6 +1038,18 @@ export default class Scanner2 extends React.Component<Scanner2Props, Scanner2Sta
                 <KeepAwake />
                 {this.renderManualSearchView()}
                 {cameraView}
+
+                <SlidingUpPanel
+                    ref={c => this.panel = c}
+                    draggableRange={{ top: Dimensions.get('window').height - 180, bottom: -50 }}
+                    snappingPoints={[360]}
+                    height={Dimensions.get('window').height}
+                    friction={0.5}
+                >
+                    <View style={{ backgroundColor: 'white', flex: 1, alignItems: 'center', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                        <View style={{backgroundColor: '#c2c4c2', borderRadius: 10, height: 6, width: 100, marginVertical: 10}}></View>
+                    </View>
+                </SlidingUpPanel>
             </View>
         );
     }
